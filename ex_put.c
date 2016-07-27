@@ -276,9 +276,12 @@ int
 numbline(int i, int max)
 {
 
+	extern short	vcntcol;
 	if (shudclob)
 		slobber(' ');
 	max -= printf("%6d  ", i);
+	if (max > 0)
+		vcntcol = value(NUMBER) << 3;
 	return normline(0, max);
 }
 
@@ -295,6 +298,7 @@ normline(int unused, int max)
 	int	c, n;
 	int	ret = 0;
 
+	(void)unused;
 	if (max > 0)
 		vcntcol = value(NUMBER) << 3;
 	if (shudclob)
