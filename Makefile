@@ -214,18 +214,9 @@ OSTYPE	= -DVMUNIX
 TERMLIB	= termlib
 
 #
-# Since ex uses sbrk() internally, a conflict with the libc's version of
-# malloc() must be avoided. There are two ways to work around this problem.
-# The first is to allocate a static pool for all malloc purposes. This will
-# work on any kind of system.
+# Malloc-based sbrk() substitution.
 #
-#MALLOC=malloc.o
-#
-# If mmap() can be used to allocate anonymous memory, this is the preferred
-# choice as it allows to grow memory dynamically as it is needed. This will
-# usually work unless you are compiling for a vector machine or another
-# unusual enviroment.
-MALLOC=mapmalloc.o
+MALLOC=sbreak.o
 
 ###############################################################################
 #                                                                             #
@@ -350,7 +341,7 @@ ex.pkg: all
 	rm -rf $(PKGROOT) $(PKGPROTO) $(PKGTEMP)/$@
 
 ex.o: config.h ex_argv.h ex.h ex_proto.h ex_temp.h ex_tty.h ex_tune.h
-ex.o: ex_vars.h libterm/libterm.h
+ex.o: ex_vars.h sbreak.h libterm/libterm.h
 ex_addr.o: config.h ex.h ex_proto.h ex_re.h ex_tune.h ex_vars.h
 ex_cmds.o: config.h ex_argv.h ex.h ex_proto.h ex_temp.h ex_tty.h ex_tune.h
 ex_cmds.o: ex_vars.h ex_vis.h libterm/libterm.h
@@ -372,7 +363,7 @@ ex_re.o: config.h ex.h ex_proto.h ex_re.h ex_tune.h ex_vars.h
 ex_set.o: config.h ex.h ex_proto.h ex_temp.h ex_tty.h ex_tune.h ex_vars.h
 ex_set.o: libterm/libterm.h
 ex_subr.o: config.h ex.h ex_proto.h ex_re.h ex_tty.h ex_tune.h ex_vars.h
-ex_subr.o: ex_vis.h libterm/libterm.h
+ex_subr.o: ex_vis.h sbreak.h libterm/libterm.h
 ex_tagio.o: config.h ex.h ex_proto.h ex_tune.h ex_vars.h
 ex_temp.o: config.h ex.h ex_proto.h ex_temp.h ex_tty.h ex_tune.h ex_vars.h
 ex_temp.o: ex_vis.h libterm/libterm.h
