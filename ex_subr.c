@@ -702,6 +702,7 @@ void
 save(line *a1, register line *a2)
 {
 	register int more;
+	line *oldend = endcore;
 
 	if (!FIXUNDO)
 		return;
@@ -710,12 +711,16 @@ save(line *a1, register line *a2)
 		vudump("before save");
 #endif
 	undkind = UNDNONE;
-	undadot = dot;
 	more = (a2 - a1 + 1) - (unddol - dol);
 	while (more > (endcore - truedol))
 		if (morelines() < 0)
 			error(catgets(catd, 1, 180,
 		"Out of memory@saving lines for undo - try using ed"));
+	if (endcore != oldend) {
+		a1 += endcore - oldend;
+		a2 += endcore - oldend;
+	}
+	undadot = dot;
 	if (more)
 		(*(more > 0 ? copywR : copyw))(unddol + more + 1, unddol + 1,
 		    (truedol - unddol));
